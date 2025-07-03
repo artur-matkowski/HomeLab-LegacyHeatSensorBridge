@@ -42,9 +42,17 @@ MessagePsqlStorage::MessagePsqlStorage(const std::string& dbName,
 
     conn = std::make_unique<pqxx::connection>(conninfo.str());
     if (!conn->is_open()) {
-        error_strm << "[PSQL] Cannot open PostgreSQL connection" << std::endl;
+        error_strm << "Cannot open PostgreSQL connection to dbname=" << dbName
+                   << ", user=" << user 
+                   << ", hostaddr=" << hostaddr 
+                   << ", port=" << port 
+                   << std::endl;
     } else {
-        info_strm << "[PSQL] PostgreSQL connection opened successfully" << std::endl;
+        info_strm << "PostgreSQL connection opened successfully to dbname=" << dbName
+                  << ", user=" << user 
+                  << ", hostaddr=" << hostaddr 
+                  << ", port=" << port 
+                  << std::endl;
     }
 }
 

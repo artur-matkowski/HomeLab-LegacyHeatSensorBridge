@@ -22,8 +22,15 @@ int main(int argc, char* argv[])
     signal(SIGINT, signalHandler);
 
     // Example usage of Udp class
+    const char* env_p = std::getenv("DB_PASSWD");
+    if(env_p == nullptr || *env_p == '\0')
+    {
+        std::cerr << "No DB_PASSWD environment variable set." << std::endl;
+        return 1;
+    }
+
     Udp udp(5005);
-    MessagePsqlStorage storage("test_db", "admin", "supersecret", "192.168.74.209", 5432);
+    MessagePsqlStorage storage("test_db", "admin", env_p, "192.168.74.209", 5432);
 
     while(inloop)
     {
@@ -100,8 +107,8 @@ int main(int argc, char* argv[])
 
 
             // Now you have all values as integers
-            printf("MCUt: %d\nCWU: %d\nCWUh: %d\nCWUc: %d\nCOh: %d\nCOc: %d\nAPI: %s\nf1: %d\nf2: %d\n",
-                MCUt_i, CWU_i, CWUh_i, CWUc_i, COh_i, COc_i, API, f1, f2);
+            //printf("MCUt: %d\nCWU: %d\nCWUh: %d\nCWUc: %d\nCOh: %d\nCOc: %d\nAPI: %s\nf1: %d\nf2: %d\n",
+            //    MCUt_i, CWU_i, CWUh_i, CWUc_i, COh_i, COc_i, API, f1, f2);
         }
         else if (result < 0)
         {
