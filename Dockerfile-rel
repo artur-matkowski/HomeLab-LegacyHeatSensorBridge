@@ -2,6 +2,7 @@ FROM debian:bookworm-slim
 
 ARG BINOUT                        # <-- build-time variable
 ARG INSTALL_DEPS
+ARG ARCHITECTURE
 
 # Install runtime and build dependencies
 RUN apt update && \
@@ -15,11 +16,12 @@ RUN apt update && \
 WORKDIR /app
 
 # Copy source code and config
-COPY build/arm64/rel/${BINOUT} /app/${BINOUT}
+COPY build/${ARCHITECTURE}/rel/${BINOUT} /app/${BINOUT}
 
 # Environment variables mirroring ConfigWrapper ParamInitializers
 # (Default values should match those in ConfigWrapper.cpp)
-#ENV PARAM=value
+ENV DB_HOST=${DB_HOST}
+ENV DB_PASSWD=${DB_PASSWD}
 
 # Entrypoint (adjust as needed)
 CMD ["/app/${BINOUT}"]

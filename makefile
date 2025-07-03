@@ -26,8 +26,7 @@ INCSTRUCTURE  = $(patsubst %, -I%, $(DIRSTRUCTURE))
 LOG_LEVEL     = ALL
 
 LINK_DEPS          = -lcrypto -lcrypto -lPocoNetSSL -lPocoNet -lPocoUtil -lPocoFoundation -lPocoCrypto -lPocoData -lpqxx -lpq
-INSTALL_DEPS       = libcrypto-dev libpoco-netssl-dev libpoco-net-dev libpoco-util-dev libpoco-foundation-dev libpoco-crypto-dev libpoco-data-dev libpqxx-dev libpq-dev
-
+INSTALL_DEPS       = libssl-dev libpoco-dev libpqxx-dev libpq-dev
 
 ###############################################################################
 # 1. Choose mode once (dbg|rel)
@@ -80,11 +79,11 @@ print-%:
 
 
 docker-image-rel:
-	docker build -f Dockerfile-rel -t $(BINOUT):$(VERSIONSHORT) --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS=$(INSTALL_DEPS) .
-	docker build -f Dockerfile-rel -t $(BINOUT):latest --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS=$(INSTALL_DEPS) .
+	docker build -f Dockerfile-rel -t $(BINOUT):$(VERSIONSHORT) --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS="$(INSTALL_DEPS)" .
+	docker build -f Dockerfile-rel -t $(BINOUT):latest --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS="$(INSTALL_DEPS)" .
 
 docker-image-dev:
-	docker build -f Dockerfile-dev -t $(BINOUT):dev --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS=$(INSTALL_DEPS) .
+	docker build -f Dockerfile-dev -t $(BINOUT):dev --build-arg VERSION='$(VERSION)' --build-arg ARCHITECTURE=$(ARCHITECTURE) --build-arg BINOUT=$(BINOUT) --build-arg INSTALL_DEPS="$(INSTALL_DEPS)" .
 
 
 install-deps:
