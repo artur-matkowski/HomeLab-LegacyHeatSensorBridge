@@ -22,15 +22,22 @@ int main(int argc, char* argv[])
     signal(SIGINT, signalHandler);
 
     // Example usage of Udp class
-    const char* env_p = std::getenv("DB_PASSWD");
-    if(env_p == nullptr || *env_p == '\0')
+    const char* env_dbPasswd = std::getenv("DB_PASSWD");
+    if(env_dbPasswd == nullptr || *env_dbPasswd == '\0')
     {
         std::cerr << "No DB_PASSWD environment variable set." << std::endl;
         return 1;
     }
 
+    const char* env_host = std::getenv("DB_HOST");
+    if(env_host == nullptr || *env_host == '\0')
+    {
+        std::cerr << "No DB_HOST environment variable set." << std::endl;
+        return 1;
+    }
+
     Udp udp(5005);
-    MessagePsqlStorage storage("test_db", "admin", env_p, "192.168.74.209", 5432);
+    MessagePsqlStorage storage("test_db", "admin", env_dbPasswd, env_host, 5432);
 
     while(inloop)
     {
