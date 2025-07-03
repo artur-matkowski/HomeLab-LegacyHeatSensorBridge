@@ -1,0 +1,6 @@
+[submodule "modules/udp"]
+	path = modules/udp
+	url = git@gitlab.com:bitforge.pl/cpp-modules/udp.git
+[submodule "modules/hc12-message-definitions"]
+	path = modules/hc12-message-definitions
+	url = git@gitlab.com:matkoland/hc12-message-definitions.git

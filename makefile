@@ -25,9 +25,9 @@ DIRSTRUCTURE  = $(shell find -L $(SRCDIR) -type d)
 INCSTRUCTURE  = $(patsubst %, -I%, $(DIRSTRUCTURE))
 LOG_LEVEL     = ALL
 
+LINK_DEPS          = -lcrypto -lcrypto -lPocoNetSSL -lPocoNet -lPocoUtil -lPocoFoundation -lPocoCrypto -lPocoData -lpqxx -lpq
+INSTALL_DEPS       = libcrypto-dev libpoco-netssl-dev libpoco-net-dev libpoco-util-dev libpoco-foundation-dev libpoco-crypto-dev libpoco-data-dev libpqxx-dev libpq-dev
 
-LINK_DEPS          = # provide deps here
-INSTALL_DEPS       = # provide deps here
 
 ###############################################################################
 # 1. Choose mode once (dbg|rel)
