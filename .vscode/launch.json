@@ -1,0 +1,36 @@
+
+// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Application",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/${input:detectArch}/dbg/${workspaceRootFolderName}",
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "Build-debug",
+            "externalConsole": false
+        }
+    ],
+    "inputs": [
+        {
+            // <–– this becomes ${input:detectArch}
+            "id": "detectArch",
+            "type": "command",
+            // easiest: run uname once and return the text
+            // (command comes from the “Tasks Shell Input” extension,
+            //  but any one-liner that prints the arch works)
+            "command": "shellCommand.execute",
+            "args": {
+            "command": "dpkg --print-architecture",
+            "trimWhiteSpace": true,
+            "silent": true,
+            "useFirstResult": true
+            }
+        }
+    ]
+}

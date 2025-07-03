@@ -1,0 +1,25 @@
+FROM debian:bookworm-slim
+
+ARG BINOUT                        # <-- build-time variable
+ARG INSTALL_DEPS
+
+# Install runtime and build dependencies
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        build-essential \
+        libstdc++6 \
+        ${INSTALL_DEPS} \
+        && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy source code and config
+COPY build/arm64/rel/${BINOUT} /app/${BINOUT}
+
+# Environment variables mirroring ConfigWrapper ParamInitializers
+# (Default values should match those in ConfigWrapper.cpp)
+#ENV PARAM=value
+
+# Entrypoint (adjust as needed)
+CMD ["/app/${BINOUT}"]
