@@ -1,6 +1,6 @@
 services:
   legacy_heat_sensor_bridge:
-    image: legacy_heat_sensor_bridge:dev
+    image: legacy_heat_sensor_bridge:latest
     container_name: legacy_heat_sensor_bridge
     environment:
       DB_HOST: ${DB_HOST}
