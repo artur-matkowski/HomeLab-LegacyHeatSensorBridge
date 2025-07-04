@@ -66,6 +66,12 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    
+    const char* logLevel = std::getenv("LOG_LEVEL");
+    bool debugLog = (logLevel && std::string(logLevel) == "DEBUG");
+
+    std::cout << "Log level specified: " << (debugLog ? "DEBUG" : "INFO") << std::endl;
+
 
     Udp udp(5005, nullptr, std::cerr, std::cout, std::cout, null_stream());
     MessagePsqlStorage storage(env_name, "admin", env_dbPasswd, env_host, 5432);
@@ -101,8 +107,6 @@ int main(int argc, char* argv[])
 
             const uint8_t SENDER_ID = 2;
             const uint8_t RECEIVER_ID = 0;
-            const char* logLevel = std::getenv("LOG_LEVEL");
-            bool debugLog = (logLevel && std::string(logLevel) == "DEBUG");
 
             // Only store if value changed
             if (MCUt_i != prevMCUt_i) {
