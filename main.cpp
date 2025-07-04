@@ -1,8 +1,31 @@
 #include <csignal>
 #include <iostream>
+#include <ostream>
+#include <streambuf>
 #include "Udp.hpp"
 #include "Message.hpp"
 #include "MessagePsqlStorage.hpp"
+
+// 1. A buffer that swallows all output.
+class NullBuffer final : public std::streambuf {
+protected:
+    // Called for each character that would be put to the buffer.
+    int_type overflow(int_type c) noexcept override {
+        return traits_type::not_eof(c);          // signal “success”
+    }
+    // Speed-up for block writes (e.g. std::string).
+    std::streamsize xsputn(const char*, std::streamsize n) noexcept override {
+        return n;                                // report “all written”
+    }
+};
+
+// 2. A global null stream you can pass anywhere an ostream& is required.
+inline std::ostream& null_stream()
+{
+    static NullBuffer   sink;
+    static std::ostream out(&sink);
+    return out;
+}
 
 
 
@@ -43,8 +66,12 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    Udp udp(5005);
+
+    Udp udp(5005, nullptr, std::cerr, std::cout, std::cout, null_stream());
     MessagePsqlStorage storage(env_name, "admin", env_dbPasswd, env_host, 5432);
+
+    // Previous values for change detection
+    int prevMCUt_i = 0, prevCWU_i = 0, prevCWUh_i = 0, prevCWUc_i = 0, prevCOh_i = 0, prevCOc_i = 0, prevF1 = 0, prevF2 = 0;
 
     while(inloop)
     {
@@ -53,7 +80,6 @@ int main(int argc, char* argv[])
         char remoteHost[16];
         uint16_t remotePort;
         int result = udp.Read(msgBuff, &msgSize, remoteHost, sizeof(remoteHost), true, &remotePort);
-
 
         if(result > 0)
         {
@@ -66,61 +92,74 @@ int main(int argc, char* argv[])
                 &MCUt, &CWU, &CWUh, &CWUc, &COh, &COc, API, &f1, &f2);
 
             // Multiply by 1000 and store as int
-            int MCUt_i = (int)(MCUt * 1000);
-            int CWU_i = (int)(CWU * 1000);
-            int CWUh_i = (int)(CWUh * 1000);
-            int CWUc_i = (int)(CWUc * 1000);
-            int COh_i = (int)(COh * 1000);
-            int COc_i = (int)(COc * 1000);
+            int MCUt_i = (int)(MCUt * 100);
+            int CWU_i = (int)(CWU * 100);
+            int CWUh_i = (int)(CWUh * 100);
+            int CWUc_i = (int)(CWUc * 100);
+            int COh_i = (int)(COh * 100);
+            int COc_i = (int)(COc * 100);
 
             const uint8_t SENDER_ID = 2;
             const uint8_t RECEIVER_ID = 0;
 
-            // After parsing and converting values:
-            Message msgMCUt(Message::MCU_temp, MCUt_i);
-            msgMCUt.idSender = SENDER_ID;
-            msgMCUt.idTarget = RECEIVER_ID;
-
-            Message msgCWU(Message::CWU_temp, CWU_i);
-            msgCWU.idSender = SENDER_ID;
-            msgCWU.idTarget = RECEIVER_ID;
-
-            Message msgCWUh(Message::CWUh_temp, CWUh_i);
-            msgCWUh.idSender = SENDER_ID;
-            msgCWUh.idTarget = RECEIVER_ID;
-
-            Message msgCWUc(Message::CWUc_temp, CWUc_i);
-            msgCWUc.idSender = SENDER_ID;
-            msgCWUc.idTarget = RECEIVER_ID;
-
-            Message msgCOh(Message::COh_temp, COh_i);
-            msgCOh.idSender = SENDER_ID;
-            msgCOh.idTarget = RECEIVER_ID;
-
-            Message msgCOc(Message::COc_temp, COc_i);
-            msgCOc.idSender = SENDER_ID;
-            msgCOc.idTarget = RECEIVER_ID;
-
-            Message msgF1(Message::flow1, f1);
-            msgF1.idSender = SENDER_ID;
-            msgF1.idTarget = RECEIVER_ID;
-
-            Message msgF2(Message::flow2, f2);
-            msgF2.idSender = SENDER_ID;
-            msgF2.idTarget = RECEIVER_ID;
-
-            storage.StoreMessage(msgMCUt);
-            storage.StoreMessage(msgCWU);
-            storage.StoreMessage(msgCWUh);
-            storage.StoreMessage(msgCWUc);
-            storage.StoreMessage(msgCOh);
-            storage.StoreMessage(msgCOc);
-            storage.StoreMessage(msgF1);
-            storage.StoreMessage(msgF2);
-
-
-
-            // Now you have all values as integers
+            // Only store if value changed
+            if ( MCUt_i != prevMCUt_i) {
+                Message msgMCUt(Message::MCU_temp, MCUt_i);
+                msgMCUt.idSender = SENDER_ID;
+                msgMCUt.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgMCUt);
+                prevMCUt_i = MCUt_i;
+            }
+            if ( CWU_i != prevCWU_i) {
+                Message msgCWU(Message::CWU_temp, CWU_i);
+                msgCWU.idSender = SENDER_ID;
+                msgCWU.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgCWU);
+                prevCWU_i = CWU_i;
+            }
+            if ( CWUh_i != prevCWUh_i) {
+                Message msgCWUh(Message::CWUh_temp, CWUh_i);
+                msgCWUh.idSender = SENDER_ID;
+                msgCWUh.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgCWUh);
+                prevCWUh_i = CWUh_i;
+            }
+            if ( CWUc_i != prevCWUc_i) {
+                Message msgCWUc(Message::CWUc_temp, CWUc_i);
+                msgCWUc.idSender = SENDER_ID;
+                msgCWUc.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgCWUc);
+                prevCWUc_i = CWUc_i;
+            }
+            if ( COh_i != prevCOh_i) {
+                Message msgCOh(Message::COh_temp, COh_i);
+                msgCOh.idSender = SENDER_ID;
+                msgCOh.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgCOh);
+                prevCOh_i = COh_i;
+            }
+            if ( COc_i != prevCOc_i) {
+                Message msgCOc(Message::COc_temp, COc_i);
+                msgCOc.idSender = SENDER_ID;
+                msgCOc.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgCOc);
+                prevCOc_i = COc_i;
+            }
+            if ( f1 != prevF1) {
+                Message msgF1(Message::flow1, f1);
+                msgF1.idSender = SENDER_ID;
+                msgF1.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgF1);
+                prevF1 = f1;
+            }
+            if ( f2 != prevF2) {
+                Message msgF2(Message::flow2, f2);
+                msgF2.idSender = SENDER_ID;
+                msgF2.idTarget = RECEIVER_ID;
+                storage.StoreMessage(msgF2);
+                prevF2 = f2;
+            }
+            // Print values from Message objects instead of temporary variables
             //printf("MCUt: %d\nCWU: %d\nCWUh: %d\nCWUc: %d\nCOh: %d\nCOc: %d\nAPI: %s\nf1: %d\nf2: %d\n",
             //    MCUt_i, CWU_i, CWUh_i, CWUc_i, COh_i, COc_i, API, f1, f2);
         }
