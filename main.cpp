@@ -36,8 +36,15 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    const char* env_name = std::getenv("DB_NAME");
+    if(env_name == nullptr || *env_name == '\0')
+    {
+        std::cerr << "No DB_NAME environment variable set." << std::endl;
+        return 1;
+    }
+
     Udp udp(5005);
-    MessagePsqlStorage storage("test_db", "admin", env_dbPasswd, env_host, 5432);
+    MessagePsqlStorage storage(env_name, "admin", env_dbPasswd, env_host, 5432);
 
     while(inloop)
     {

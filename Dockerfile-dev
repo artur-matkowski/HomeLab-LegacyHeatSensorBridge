@@ -22,6 +22,7 @@ COPY build/${ARCHITECTURE}/dbg/${BINOUT} /app/${BINOUT}
 # (Default values should match those in ConfigWrapper.cpp)
 ENV DB_HOST=${DB_HOST}
 ENV DB_PASSWD=${DB_PASSWD}
+ENV DB_NAME=${DB_NAME}
 
 # Entrypoint (adjust as needed)
 CMD ["/app/${BINOUT}"]
