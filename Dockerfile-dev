@@ -23,6 +23,7 @@ COPY build/${ARCHITECTURE}/dbg/${BINOUT} /app/${BINOUT}
 ENV DB_HOST=${DB_HOST}
 ENV DB_PASSWD=${DB_PASSWD}
 ENV DB_NAME=${DB_NAME}
+ENV BINOUT=${BINOUT} 
 
 # Entrypoint (adjust as needed)
-CMD ["/app/${BINOUT}"]
+CMD /bin/sh -c "exec /app/$BINOUT"
