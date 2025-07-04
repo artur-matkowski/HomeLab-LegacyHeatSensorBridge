@@ -101,58 +101,84 @@ int main(int argc, char* argv[])
 
             const uint8_t SENDER_ID = 2;
             const uint8_t RECEIVER_ID = 0;
+            const char* logLevel = std::getenv("LOG_LEVEL");
+            bool debugLog = (logLevel && std::string(logLevel) == "DEBUG");
 
             // Only store if value changed
-            if ( MCUt_i != prevMCUt_i) {
+            if (MCUt_i != prevMCUt_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] MCUt changed: " << prevMCUt_i << " -> " << MCUt_i << std::endl;
+                }
                 Message msgMCUt(Message::MCU_temp, MCUt_i);
                 msgMCUt.idSender = SENDER_ID;
                 msgMCUt.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgMCUt);
                 prevMCUt_i = MCUt_i;
             }
-            if ( CWU_i != prevCWU_i) {
+            if (CWU_i != prevCWU_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] CWU changed: " << prevCWU_i << " -> " << CWU_i << std::endl;
+                }
                 Message msgCWU(Message::CWU_temp, CWU_i);
                 msgCWU.idSender = SENDER_ID;
                 msgCWU.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgCWU);
                 prevCWU_i = CWU_i;
             }
-            if ( CWUh_i != prevCWUh_i) {
+            if (CWUh_i != prevCWUh_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] CWUh changed: " << prevCWUh_i << " -> " << CWUh_i << std::endl;
+                }
                 Message msgCWUh(Message::CWUh_temp, CWUh_i);
                 msgCWUh.idSender = SENDER_ID;
                 msgCWUh.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgCWUh);
                 prevCWUh_i = CWUh_i;
             }
-            if ( CWUc_i != prevCWUc_i) {
+            if (CWUc_i != prevCWUc_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] CWUc changed: " << prevCWUc_i << " -> " << CWUc_i << std::endl;
+                }
                 Message msgCWUc(Message::CWUc_temp, CWUc_i);
                 msgCWUc.idSender = SENDER_ID;
                 msgCWUc.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgCWUc);
                 prevCWUc_i = CWUc_i;
             }
-            if ( COh_i != prevCOh_i) {
+            if (COh_i != prevCOh_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] COh changed: " << prevCOh_i << " -> " << COh_i << std::endl;
+                }
                 Message msgCOh(Message::COh_temp, COh_i);
                 msgCOh.idSender = SENDER_ID;
                 msgCOh.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgCOh);
                 prevCOh_i = COh_i;
             }
-            if ( COc_i != prevCOc_i) {
+            if (COc_i != prevCOc_i) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] COc changed: " << prevCOc_i << " -> " << COc_i << std::endl;
+                }
                 Message msgCOc(Message::COc_temp, COc_i);
                 msgCOc.idSender = SENDER_ID;
                 msgCOc.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgCOc);
                 prevCOc_i = COc_i;
             }
-            if ( f1 != prevF1) {
+            if (f1 != prevF1) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] f1 changed: " << prevF1 << " -> " << f1 << std::endl;
+                }
                 Message msgF1(Message::flow1, f1);
                 msgF1.idSender = SENDER_ID;
                 msgF1.idTarget = RECEIVER_ID;
                 storage.StoreMessage(msgF1);
                 prevF1 = f1;
             }
-            if ( f2 != prevF2) {
+            if (f2 != prevF2) {
+                if (debugLog) {
+                    std::cout << "[DEBUG] f2 changed: " << prevF2 << " -> " << f2 << std::endl;
+                }
                 Message msgF2(Message::flow2, f2);
                 msgF2.idSender = SENDER_ID;
                 msgF2.idTarget = RECEIVER_ID;
