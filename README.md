@@ -58,7 +58,7 @@ make install-deps
 Or manually:
 
 ```bash
-apt install -y libssl-dev libpoco-dev libpqxx-dev libpq-dev
+sudo apt install -y libssl-dev libpoco-dev libpqxx-dev libpq-dev
 ```
 
 ### 3. Build the Project
@@ -171,9 +171,11 @@ Where:
 ## Database Schema
 
 The application uses a PostgreSQL database with a message storage schema. The database connection is configured with:
-- Default user: `admin`
+- Username: `admin` (hardcoded in main.cpp - consider changing for production use)
 - Port: `5432`
 - Configurable host, database name, and password via environment variables
+
+**Security Note**: The database username is currently hardcoded as `admin`. For production deployments, consider modifying the code to use a configurable username with appropriate limited privileges.
 
 ## Architecture
 
