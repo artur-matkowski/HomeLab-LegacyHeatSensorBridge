@@ -1,7 +1,7 @@
 ########### Project Environment ###########
 
 PROJECTPATH   = $(shell pwd)
-BINOUT        = $(shell basename $(PROJECTPATH))
+BINOUT        = $(shell basename $(PROJECTPATH) | tr '[:upper:]' '[:lower:]')
 VERSION       = $(shell $(PROJECTPATH)/version.sh)
 VERSIONSHORT  = $(shell $(PROJECTPATH)/version.sh --short)
 ARCHITECTURE  = $(shell dpkg --print-architecture)
